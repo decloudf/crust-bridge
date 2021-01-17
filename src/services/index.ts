@@ -56,7 +56,7 @@ export async function ethTxParser(
 
     return [tx.from, amount];
   } catch (e: any) {
-    logger.error(`Parse eth tx error: ${e}`);
+    logger.error(`  ↪ Parse eth tx error: ${e}`);
     return null;
   }
 }
@@ -83,12 +83,24 @@ export async function claimMiner(
     });
 
     const crus = erc20ToCru(amount);
+    logger.info(`  ↪ Mint claim: ${ethTx}, ${ethAddr}, ${crus}`);
+
     const mintClaim = api.tx.claims.mintClaim(ethTx, ethAddr, crus);
     const txRes = parseObj(await sendTx(mintClaim));
 
     if (txRes) {
-      // TODO: Check claims on chain again
-      return true;
+      const claimRes: [string, number] | null = parseObj(
+        await api.query.claims.claims(ethTx)
+      );
+      logger.info(`  ↪ Got claims info on chain: ${claimRes}`);
+
+      // Disconnect ws connection
+      await api.disconnect();
+      return (
+        claimRes !== null &&
+        claimRes[0].toLowerCase() === ethAddr.toLowerCase() &&
+        claimRes[1] === crus
+      );
     } else {
       return false;
     }
