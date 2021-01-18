@@ -1,6 +1,12 @@
 import logger from '../log';
 import {erc20ToCru, sendTx, parseObj} from '../util';
-import {crustABI, ethEndpoint, cruContractAddr, cruClaimAddr} from '../env';
+import {
+  crustABI,
+  ethEndpoint,
+  cruContractAddr,
+  cruClaimAddr,
+  minEthConfirmation,
+} from '../env';
 import {getApi} from './crustApi';
 import * as _ from 'lodash';
 import BN = require('bn.js');
@@ -26,12 +32,20 @@ export async function ethTxParser(
 
     // 2. Parse tx by tx hash
     const tx = parseObj(await web3.eth.getTransaction(txHash));
-    // Failed with not crust transfer tx
-    if (!tx || !tx.from || !tx.to || tx.to !== cruContractAddr) {
+    const currentBN = await web3.eth.getBlockNumber();
+    // Failed with not crust transfer tx or confirmation not enough
+    if (
+      !tx ||
+      !tx.from ||
+      !tx.to ||
+      tx.to !== cruContractAddr ||
+      currentBN - tx.blockNumber < minEthConfirmation
+    ) {
       logger.info('  ↪ Illegal tx or not crust token transfer tx');
       return null;
     }
 
+    logger.info(`  ↪ Got legal tx from ethereum: ${JSON.stringify(tx)}`);
     // 3. Parse input data
     const inputDetail = decoder.decodeData(tx.input);
     const method = inputDetail.method;
@@ -76,11 +90,17 @@ export async function claimMiner(
   try {
     // TODO: Query if this tx already been claimed
     const api = getApi();
-    await api.isReady.then(api => {
-      logger.info(
-        `⚡️ [global] Current chain info: ${api.runtimeChain}, ${api.runtimeVersion}`
-      );
-    });
+    await api.isReadyOrError
+      .then(api => {
+        logger.info(
+          `⚡️ [global] Current chain info: ${api.runtimeChain}, ${api.runtimeVersion}`
+        );
+      })
+      .catch(async e => {
+        logger.error('[global] Chain connection failed.');
+        await api.disconnect();
+        throw e;
+      });
 
     const crus = erc20ToCru(amount);
     logger.info(`  ↪ Mint claim: ${ethTx}, ${ethAddr}, ${crus}`);
@@ -105,7 +125,7 @@ export async function claimMiner(
       return false;
     }
   } catch (e: any) {
-    logger.error(`Mint cru error: ${e}`);
+    logger.error(`Mint cru error: ${JSON.stringify(e)}`);
     return false;
   }
 }
