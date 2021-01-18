@@ -45,6 +45,7 @@ const types = {
   },
   PKInfo: {
     code: 'SworkerCode',
+    allow_report_slot: 'ReportSlot',
     anchor: 'Option<SworkerAnchor>',
   },
   Status: {
