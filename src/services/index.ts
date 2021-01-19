@@ -43,7 +43,18 @@ export async function ethTxParser(
       return null;
     }
 
-    logger.info(`  ↪ Got legal tx from ethereum: ${JSON.stringify(tx)}`);
+    // 3. Tx status should be success
+    const txReceipt = parseObj(await web3.eth.getTransactionReceipt(txHash));
+    // Failed with failed tx
+    if (!txReceipt || !txReceipt.status || txReceipt.status === false) {
+      logger.info('  ↪ Failed tx');
+      return null;
+    }
+
+    logger.info(
+      `  ↪ Got legal tx from ethereum: ${JSON.stringify(tx)}, 
+      receipt: ${JSON.stringify(txReceipt)}`
+    );
 
     // 3. Parse input data
     const inputDetail = decoder.decodeData(tx.input);
