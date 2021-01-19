@@ -46,7 +46,7 @@ export async function ethTxParser(
     // 3. Tx status should be success
     const txReceipt = parseObj(await web3.eth.getTransactionReceipt(txHash));
     // Failed with failed tx
-    if (!txReceipt || !txReceipt.status || txReceipt.status === false) {
+    if (!txReceipt || txReceipt.status === false) {
       logger.info('  ↪ Failed tx');
       return null;
     }
