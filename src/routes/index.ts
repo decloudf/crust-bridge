@@ -1,6 +1,6 @@
+import {Context, Next} from 'koa';
 import BN = require('bn.js');
-import {Context} from 'koa';
-import * as Router from 'koa-router';
+import Router = require('koa-router');
 import logger from '../log';
 import {ethTxParser, claimMiner} from '../services';
 
@@ -8,7 +8,7 @@ const router = new Router();
 const handleTx = {};
 
 // TODO: add credential and cors restrict
-router.post('/claim/:hash', async (ctx, next) => {
+router.post('/claim/:hash', async (ctx: Context, next: Next) => {
   const ethTxHash = ctx.params.hash;
   logger.info(`Received eth tx hash: ${ethTxHash}`);
   // TODO: judge if there is tx pending

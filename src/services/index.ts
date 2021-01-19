@@ -96,7 +96,7 @@ export async function claimMiner(
         );
       })
       .catch(async e => {
-        logger.error('[global] Chain connection failed.');
+        logger.error('💥 [global] Chain connection failed.');
         await api.disconnect();
         throw e;
       });
@@ -124,7 +124,7 @@ export async function claimMiner(
       return false;
     }
   } catch (e: any) {
-    logger.error(`Mint cru error: ${JSON.stringify(e)}`);
+    logger.error(`💥 Mint cru error: ${JSON.stringify(e)}`);
     return false;
   }
 }
