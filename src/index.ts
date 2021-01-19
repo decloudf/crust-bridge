@@ -12,5 +12,6 @@ const koa = new Koa();
 koa.use(router.routes());
 
 if (require.main === module) {
-  koa.listen(4000); // default ports
+  logger.info(`🌉  Crust bridge runs on ${process.env.PORT}`);
+  koa.listen(process.env.PORT); // default ports
 }

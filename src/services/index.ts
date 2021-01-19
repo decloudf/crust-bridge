@@ -22,9 +22,7 @@ export async function ethTxParser(
   txHash: string
 ): Promise<[string, BN] | null> {
   try {
-    // 0. Load env variables
-    // TODO: put into env variables
-
+    // 0. Load CRUST decoder
     const decoder = new InputDecoder(crustABI);
 
     // 1. Connect to eth endpoint
@@ -46,6 +44,7 @@ export async function ethTxParser(
     }
 
     logger.info(`  ↪ Got legal tx from ethereum: ${JSON.stringify(tx)}`);
+
     // 3. Parse input data
     const inputDetail = decoder.decodeData(tx.input);
     const method = inputDetail.method;

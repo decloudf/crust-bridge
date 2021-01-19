@@ -2,7 +2,7 @@
 import {Keyring} from '@polkadot/keyring';
 import {KeyringPair} from '@polkadot/keyring/types';
 import {SubmittableExtrinsic} from '@polkadot/api/promise/types';
-import {minerSeeds, minerPwd} from '../env';
+import {minerSeeds} from '../env';
 import BN = require('bn.js');
 import logger from '../log';
 
@@ -76,8 +76,6 @@ function loadKeyringPair(): KeyringPair {
     type: 'sr25519',
   });
 
-  //const krp = kr.addFromMnemonic(minerSeeds);
-  //krp.decodePkcs8(minerPwd);
-  const krp = kr.addFromUri('//Bob');
+  const krp = kr.addFromUri(minerSeeds);
   return krp;
 }
