@@ -36,7 +36,7 @@ export async function ethTxParser(
       !tx ||
       !tx.from ||
       !tx.to ||
-      tx.to !== cruContractAddr ||
+      tx.to.toLowerCase() !== cruContractAddr.toLowerCase() ||
       currentBN - tx.blockNumber < minEthConfirmation
     ) {
       logger.info('  ↪ Illegal tx or not crust token transfer tx');
@@ -51,11 +51,6 @@ export async function ethTxParser(
       return null;
     }
 
-    logger.info(
-      `  ↪ Got legal tx from ethereum: ${JSON.stringify(tx)}, 
-      receipt: ${JSON.stringify(txReceipt)}`
-    );
-
     // 3. Parse input data
     const inputDetail = decoder.decodeData(tx.input);
     const method = inputDetail.method;
@@ -67,9 +62,9 @@ export async function ethTxParser(
     }
     const to = '0x' + inputs[0];
     // Failed with not cru claim
-    if (to !== cruClaimAddr) {
+    if (to.toLowerCase() !== cruClaimAddr.toLowerCase()) {
       logger.info('  ↪ Not crust token claim transaction');
-      // TODO: Denied with return null
+      return null;
     }
     const from = tx.from;
     const amount = web3.utils.toBN(inputs[1]);
