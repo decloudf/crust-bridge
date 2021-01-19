@@ -23,7 +23,9 @@ export async function sendTx(tx: SubmittableExtrinsic) {
   const krp = loadKeyringPair();
   return new Promise((resolve, reject) => {
     tx.signAndSend(krp, ({events = [], status}) => {
-      logger.info(`  ↪ 💸 [tx]: Transaction status: ${status.type}`);
+      logger.info(
+        `  ↪ 💸 [tx]: Transaction status: ${status.type}, nonce: ${tx.nonce}`
+      );
 
       if (
         status.isInvalid ||

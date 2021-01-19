@@ -10,10 +10,8 @@ const handleTx = {};
 // TODO: add credential and cors restrict
 router.post('/claim/:hash', async (ctx: Context, next: Next) => {
   const ethTxHash = ctx.params.hash;
-  logger.info(`Received eth tx hash: ${ethTxHash}`);
-  // TODO: judge if there is tx pending
-
   const parseTx = async () => {
+    logger.info(`Received eth tx hash: ${ethTxHash}`);
     // 1. Parse eth tx
     const parseRes: [string, BN] | null = await ethTxParser(ethTxHash);
     // Illegal crust claim transaction
