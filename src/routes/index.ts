@@ -23,7 +23,17 @@ router.post('/claim/:hash', async (ctx: Context, next: Next) => {
       // 2. Mint into crust maxwell
       const claimer = parseRes[0];
       const amount = parseRes[1];
-      return await claimMiner(ethTxHash, claimer, amount);
+      return await handleWithLock(
+        ctx,
+        handleTx,
+        'sendMintClaim',
+        async () => {
+          await claimMiner(ethTxHash, claimer, amount);
+        },
+        {
+          type: 'MintClaimIsHandling',
+        }
+      );
     }
   };
 
