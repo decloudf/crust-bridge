@@ -61,10 +61,10 @@ export async function sendTx(tx: SubmittableExtrinsic) {
 /**
  * ERC20 CRU(decimal: 18) to Crust CRU(decimal: 12)
  * @param amount ERC20 CRU
- * @returns Crust CRU(round to 1.0)
+ * @returns Crust CRU(round to pico unit)
  */
 export function erc20ToCru(amount: BN): number {
-  const crus = amount.divRound(new BN('1000000000000000000')).toNumber();
+  const crus = amount.divn(1000000).toNumber();
   return crus;
 }
 
