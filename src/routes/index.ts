@@ -31,7 +31,7 @@ router.post('/claim/:hash', async (ctx: Context, next: Next) => {
           await claimMiner(ethTxHash, claimer, amount);
         },
         {
-          code: 503,
+          code: 409,
           msg: 'MintClaimIsOccupied',
         }
       );
@@ -67,7 +67,7 @@ async function handleWithLock(
   logger.debug(`Handle with locking key: ${key}`);
 
   if (lockCtx[key]) {
-    return ctx.throw(error.code || 400, error);
+    return ctx.throw(error.code || 409, error);
   }
 
   try {
