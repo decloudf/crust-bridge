@@ -2,13 +2,26 @@ import Koa = require('koa');
 import logger from './log';
 import router from './routes';
 
-const koa = new Koa();
+const app = new Koa();
 const cors = require('@koa/cors');
 
-koa.use(router.routes());
-koa.use(cors());
+app.use(cors());
+
+// Global error handling
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (e) {
+    logger.error(`💥 Unknown global error catched: ${JSON.stringify(e)}`);
+    ctx.status = e.statusCode || e.status || 500;
+    ctx.body = {msg: 'Unknown error'};
+    ctx.app.emit('error', e, ctx);
+  }
+});
+
+app.use(router.routes());
 
 if (require.main === module) {
   logger.info(`🌉  Crust bridge runs on ${process.env.PORT}`);
-  koa.listen(process.env.PORT); // default ports
+  app.listen(process.env.PORT); // default ports
 }
