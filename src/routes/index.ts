@@ -10,10 +10,8 @@ const handleTx = {};
 // TODO: add credential and cors restrict
 router.post('/claim/:hash', async (ctx: Context, next: Next) => {
   const ethTxHash = ctx.params.hash;
-  logger.info(`Received eth tx hash: ${ethTxHash}`);
-  // TODO: judge if there is tx pending
-
   const parseTx = async () => {
+    logger.info(`Received eth tx hash: ${ethTxHash}`);
     // 1. Parse eth tx
     const parseRes: [string, BN] | null = await ethTxParser(ethTxHash);
     // Illegal crust claim transaction
@@ -23,7 +21,17 @@ router.post('/claim/:hash', async (ctx: Context, next: Next) => {
       // 2. Mint into crust maxwell
       const claimer = parseRes[0];
       const amount = parseRes[1];
-      return await claimMiner(ethTxHash, claimer, amount);
+      return await handleWithLock(
+        ctx,
+        handleTx,
+        'sendMintClaim',
+        async () => {
+          await claimMiner(ethTxHash, claimer, amount);
+        },
+        {
+          type: 'MintClaimIsHandling',
+        }
+      );
     }
   };
 

@@ -43,7 +43,7 @@ export async function ethTxParser(
       return null;
     }
 
-    // 3. Tx status should be success
+    // 4. Tx status should be success
     const txReceipt = parseObj(await web3.eth.getTransactionReceipt(txHash));
     // Failed with failed tx
     if (!txReceipt || txReceipt.status === false) {
@@ -51,7 +51,7 @@ export async function ethTxParser(
       return null;
     }
 
-    // 3. Parse input data
+    // 5. Parse input data
     const inputDetail = decoder.decodeData(tx.input);
     const method = inputDetail.method;
     const inputs = inputDetail.inputs;
