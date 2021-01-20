@@ -14,6 +14,7 @@ router.post('/claim/:hash', async (ctx: Context, next: Next) => {
     logger.info(`Received eth tx hash: ${ethTxHash}`);
     // 1. Parse eth tx
     const parseRes: [string, BN] | null = await ethTxParser(ethTxHash);
+
     // Illegal crust claim transaction
     if (!parseRes) {
       return false;
@@ -21,6 +22,7 @@ router.post('/claim/:hash', async (ctx: Context, next: Next) => {
       // 2. Mint into crust maxwell
       const claimer = parseRes[0];
       const amount = parseRes[1];
+
       return await handleWithLock(
         ctx,
         handleTx,
@@ -29,17 +31,29 @@ router.post('/claim/:hash', async (ctx: Context, next: Next) => {
           await claimMiner(ethTxHash, claimer, amount);
         },
         {
-          type: 'MintClaimIsHandling',
+          code: 409,
+          msg: 'MintClaimIsOccupied',
         }
       );
     }
   };
 
   const result = await handleWithLock(ctx, handleTx, ethTxHash, parseTx, {
-    type: 'TxIsHandling',
+    code: 423,
+    msg: 'SameEthTxIsHandling',
   });
 
-  ctx.response.status = result ? 200 : 400;
+  if (result) {
+    ctx.response.status = 200;
+    ctx.response.body = {
+      msg: 'MintClaimSuccess',
+    };
+  } else {
+    ctx.response.status = 400;
+    ctx.response.body = {
+      msg: 'MintClaimFailed',
+    };
+  }
   await next();
 });
 
@@ -53,7 +67,7 @@ async function handleWithLock(
   logger.debug(`Handle with locking key: ${key}`);
 
   if (lockCtx[key]) {
-    return ctx.throw(423, error);
+    return ctx.throw(error.code || 409, error);
   }
 
   try {
