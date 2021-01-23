@@ -28,7 +28,7 @@ router.post('/claim/:hash', async (ctx: Context, next: Next) => {
         handleTx,
         'sendMintClaim',
         async () => {
-          await claimMiner(ethTxHash, claimer, amount);
+          return await claimMiner(ethTxHash, claimer, amount);
         },
         {
           code: 409,
