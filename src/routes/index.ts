@@ -3,11 +3,11 @@ import BN = require('bn.js');
 import Router = require('koa-router');
 import logger from '../log';
 import {ethTxParser, claimMiner} from '../services';
+import {timeout} from 'promise-timeout';
 
 const router = new Router();
-const handleTx = {};
+const txLocker = {};
 
-// TODO: add credential and cors restrict
 router.post('/claim/:hash', async (ctx: Context, next: Next) => {
   const ethTxHash = ctx.params.hash;
   const parseTx = async () => {
@@ -25,7 +25,7 @@ router.post('/claim/:hash', async (ctx: Context, next: Next) => {
 
       return await handleWithLock(
         ctx,
-        handleTx,
+        txLocker,
         'sendMintClaim',
         async () => {
           return await claimMiner(ethTxHash, claimer, amount);
@@ -38,7 +38,7 @@ router.post('/claim/:hash', async (ctx: Context, next: Next) => {
     }
   };
 
-  const result = await handleWithLock(ctx, handleTx, ethTxHash, parseTx, {
+  const result = await handleWithLock(ctx, txLocker, ethTxHash, parseTx, {
     code: 423,
     msg: 'SameEthTxIsHandling',
   });
@@ -65,14 +65,18 @@ async function handleWithLock(
   error: any
 ) {
   logger.debug(`Handle with locking key: ${key}`);
-
   if (lockCtx[key]) {
     return ctx.throw(error.code || 409, error);
   }
 
   try {
     lockCtx[key] = true;
-    return await handler();
+    return await timeout(
+      new Promise((resolve, reject) => {
+        handler().then(resolve).catch(reject);
+      }),
+      2 * 60 * 1000 // 2 min will timeout
+    );
   } finally {
     delete lockCtx[key];
   }
