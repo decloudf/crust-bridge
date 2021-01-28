@@ -93,7 +93,6 @@ export async function claimMiner(
   amount: BN
 ): Promise<boolean> {
   try {
-    // TODO: Query if this tx already been claimed
     const api = getApi();
     await api.isReadyOrError
       .then(api => {
@@ -108,7 +107,14 @@ export async function claimMiner(
       });
 
     const crus = erc20ToCru(amount);
-    logger.info(`  ↪ Mint claim: ${ethTx}, ${ethAddr}, ${crus}`);
+    logger.info(`  ↪ Try to mint claim: ${ethTx}, ${ethAddr}, ${crus}`);
+
+    // Query chain
+    const maybeClaim = parseObj(await api.query.claims.claims(ethTx));
+    if (maybeClaim) {
+      logger.info(`  ↪ Claim already exist: ${ethTx}`);
+      return true; // Already mint this eth tx
+    }
 
     const mintClaim = api.tx.claims.mintClaim(ethTx, ethAddr, crus);
     const txRes = parseObj(await sendTx(mintClaim));
