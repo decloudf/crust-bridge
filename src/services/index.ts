@@ -106,8 +106,10 @@ export async function claimMiner(
         throw e;
       });
 
-    const crus = erc20ToCru(amount);
-    logger.info(`  ↪ Try to mint claim: ${ethTx}, ${ethAddr}, ${crus}`);
+    const crus: BN = erc20ToCru(amount);
+    logger.info(
+      `  ↪ Try to mint claim: ${ethTx}, ${ethAddr}, ${crus.toString()}`
+    );
 
     // Query chain
     const maybeClaim = parseObj(await api.query.claims.claims(ethTx));

@@ -65,9 +65,11 @@ export async function sendTx(tx: SubmittableExtrinsic) {
  * @param amount ERC20 CRU
  * @returns Crust CRU(round to pico unit)
  */
-export function erc20ToCru(amount: BN): number {
-  logger.info(`Convert erc20(${amount.toString()}) into cru`);
-  const crus = amount.div(new BN(1000000)).toNumber();
+export function erc20ToCru(amount: BN): BN {
+  const crus = amount.div(new BN(1000000));
+  logger.info(
+    `Convert erc20(${amount.toString()}) into cru(${crus.toString()})`
+  );
   return crus;
 }
 
