@@ -106,8 +106,10 @@ export async function claimMiner(
         throw e;
       });
 
-    const crus = erc20ToCru(amount);
-    logger.info(`  ↪ Try to mint claim: ${ethTx}, ${ethAddr}, ${crus}`);
+    const crus: BN = erc20ToCru(amount);
+    logger.info(
+      `  ↪ Try to mint claim: ${ethTx}, ${ethAddr}, ${crus.toString()}`
+    );
 
     // Query chain
     const maybeClaim = parseObj(await api.query.claims.claims(ethTx));
@@ -120,7 +122,7 @@ export async function claimMiner(
     const txRes = parseObj(await sendTx(mintClaim));
 
     if (txRes) {
-      const claimRes: [string, number] | null = parseObj(
+      const claimRes: [string, BN] | null = parseObj(
         await api.query.claims.claims(ethTx)
       );
       logger.info(`  ↪ Got claims info on chain: ${claimRes}`);
