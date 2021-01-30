@@ -122,7 +122,7 @@ export async function claimMiner(
     const txRes = parseObj(await sendTx(mintClaim));
 
     if (txRes) {
-      const claimRes: [string, number] | null = parseObj(
+      const claimRes: [string, BN] | null = parseObj(
         await api.query.claims.claims(ethTx)
       );
       logger.info(`  ↪ Got claims info on chain: ${claimRes}`);
