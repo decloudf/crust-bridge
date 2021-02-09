@@ -115,7 +115,9 @@ async function main(): Promise<boolean> {
   const claimBackRecords: ClaimBackRecord[] = [];
   for (const crustAccount of claimBackMap.keys()) {
     const value = claimBackMap.get(crustAccount);
-    if (value) {
+
+    // - claimBackFee
+    if (value && value[1] > claimBackFee) {
       claimBackRecords.push({
         crustAccount,
         ethAccount: value[0] !== null ? value[0] : '',
