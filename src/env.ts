@@ -17,3 +17,9 @@ export const apiPass = {
   name: process.env.API_AUTH_NAME as string,
   pass: process.env.API_AUTH_PWD as string,
 };
+export const claimBackStartBN = Number(
+  process.env.CLAIM_BACK_START_BN as string
+);
+export const claimBackEndBN = Number(process.env.CLAIM_BACK_END_BN as string);
+export const claimBackFee = Number(process.env.CLAIM_BACK_FEE as string);
+export const claimBackAddress = process.env.CLAIM_BACK_ADDRESS as string;

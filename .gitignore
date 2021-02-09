@@ -40,5 +40,6 @@ dist/**/*
 # Ignore yarn.lock
 yarn.lock
 
-# Ignore build/
+# Ignore build/ and all js files
 build/
+*.js
