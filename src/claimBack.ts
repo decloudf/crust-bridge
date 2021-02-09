@@ -13,7 +13,7 @@ import {getApi} from './services/crustApi';
 const sleep = require('util').promisify(setTimeout);
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
-const subscanEndpoint = 'https://crust.subscan.io/api/scan/transfers';
+const subscanEndpoint = 'https://crust.subscan.io';
 const row = 20;
 const api = getApi();
 
@@ -29,7 +29,8 @@ interface ClaimBackRecord {
 }
 
 async function getClaimBackTransfers(): Promise<ClaimBackTransfer[]> {
-  const res: any = await got.post(subscanEndpoint, {
+  const transfersApi = subscanEndpoint + '/api/scan/transfers';
+  const res: any = await got.post(transfersApi, {
     json: {
       address: claimBackAddress,
       row,
@@ -45,7 +46,7 @@ async function getClaimBackTransfers(): Promise<ClaimBackTransfer[]> {
   logger.info(`Got ${totalTransferCount} transfers from ${claimBackAddress}`);
 
   for (let i = 0; i <= queryNum; i++) {
-    const res: any = await got.post(subscanEndpoint, {
+    const res: any = await got.post(transfersApi, {
       json: {
         address: claimBackAddress,
         row,
