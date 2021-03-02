@@ -66,7 +66,8 @@ async function getClaimBackTransfers(): Promise<ClaimBackTransfer[]> {
     t =>
       t.to === claimBackAddress &&
       t.block_num > claimBackStartBN &&
-      t.block_num <= claimBackEndBN
+      t.block_num <= claimBackEndBN &&
+      Boolean(t.success)
   );
 
   toTargetTransfers.forEach((tt, idx) => {
