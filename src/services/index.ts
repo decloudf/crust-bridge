@@ -68,7 +68,7 @@ export async function ethTxParser(
       to !== cruClaimAddr.toLowerCase() ||
       to !== cruClaimContract.toLowerCase()
     ) {
-      logger.info('  ↪ Not crust token claim transaction');
+      logger.info(`  ↪ Not crust token claim transaction: ${to}`);
       return null;
     }
     const from = tx.from;
