@@ -1,6 +1,6 @@
 {
   "name": "crust-bridge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Bridge between Crust Network Token and Crust ERC20 Token",
   "main": "index.js",
   "repository": "https://github.com/decloudf/crust-bridge.git",
