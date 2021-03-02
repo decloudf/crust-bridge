@@ -5,6 +5,7 @@ import {
   ethEndpoint,
   cruContractAddr,
   cruClaimAddr,
+  cruClaimContract,
   minEthConfirmation,
 } from '../env';
 import {getApi} from './crustApi';
@@ -60,9 +61,13 @@ export async function ethTxParser(
       logger.info('  ↪ Not crust token transfer transaction');
       return null;
     }
-    const to = '0x' + inputs[0];
+
+    const to = ('0x' + inputs[0]).toLowerCase();
     // Failed with not cru claim
-    if (to.toLowerCase() !== cruClaimAddr.toLowerCase()) {
+    if (
+      to !== cruClaimAddr.toLowerCase() ||
+      to !== cruClaimContract.toLowerCase()
+    ) {
       logger.info('  ↪ Not crust token claim transaction');
       return null;
     }
