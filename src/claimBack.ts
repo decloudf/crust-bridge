@@ -56,8 +56,10 @@ async function getClaimBackTransfers(): Promise<ClaimBackTransfer[]> {
     });
     const data = parseObj(res.body.data);
 
-    logger.info(`Got new ${data['transfers'].length} transfers from Subscan`);
-    totalTransfers = totalTransfers.concat(data['transfers']);
+    if (data['transfers']) {
+      logger.info(`Got new ${data['transfers'].length} transfers from Subscan`);
+      totalTransfers = totalTransfers.concat(data['transfers']);
+    }
 
     await sleep(500);
   }
@@ -66,7 +68,8 @@ async function getClaimBackTransfers(): Promise<ClaimBackTransfer[]> {
     t =>
       t.to === claimBackAddress &&
       t.block_num > claimBackStartBN &&
-      t.block_num <= claimBackEndBN
+      t.block_num <= claimBackEndBN &&
+      t.success
   );
 
   toTargetTransfers.forEach((tt, idx) => {
