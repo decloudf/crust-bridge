@@ -1,14 +1,14 @@
 {
-  "name": "crust-bridge",
+  "name": "crust-maxwell-bridge",
   "version": "0.1.1",
-  "description": "Bridge between Crust Network Token and Crust ERC20 Token",
+  "description": "Bridge between Crust Maxwell Network Token and Crust ERC20 Token",
   "main": "index.js",
   "repository": "https://github.com/decloudf/crust-bridge.git",
   "author": "Zikun Fan <kun@crust.network>",
   "license": "GPL-3.0",
   "scripts": {
     "debug": "nodemon src/index.ts",
-    "start": "node build/src/index.js",
+    "start": "node src/build/src/index.js",
     "build": "tsc -p ./ & cp src/abi.json build/src/",
     "lint": "gts lint",
     "clean": "gts clean",

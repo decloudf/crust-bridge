@@ -2,15 +2,29 @@ name: PR
 on: [pull_request]
 
 jobs:
-  pr:
+  maxwell-bridge-checker:
     strategy:
       matrix:
         step: ['lint', 'build']
-    name: ${{ matrix.step }}
+    name: maxwell bridge ${{ matrix.step }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - name: ${{ matrix.step }}
       run: |
+        cd maxwell-bridge
+        yarn
+        yarn ${{ matrix.step }}
+  mainnet-bridge-checker:
+    strategy:
+      matrix:
+        step: ['lint', 'build']
+    name: mainnet bridge ${{ matrix.step }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: ${{ matrix.step }}
+      run: |
+        cd mainnet-bridge
         yarn
         yarn ${{ matrix.step }}
