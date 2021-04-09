@@ -1,7 +1,7 @@
 FROM node:current-alpine3.10
 
 # Create crust-bridge directory
-WORKDIR /usr/src/crust-bridge
+WORKDIR /usr/src/crust-maxwell-bridge
 
 # Move source files to docker image
 COPY . .
