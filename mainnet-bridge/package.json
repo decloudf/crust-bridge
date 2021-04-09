@@ -8,6 +8,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "lint": "gts lint",
+    "build": "tsc -p ./",
     "clean": "gts clean",
     "compile": "tsc",
     "fix": "gts fix",
