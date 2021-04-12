@@ -18,7 +18,7 @@
     "posttest": "npm run lint"
   },
   "dependencies": {
-    "@crustio/type-definitions": "file:../../crust.js/build",
+    "@crustio/type-definitions": "^0.0.6",
     "@polkadot/api": "^4.5.1",
     "bn.js": "^5.2.0",
     "csvtojson": "^2.0.10",
