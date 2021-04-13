@@ -13,9 +13,8 @@ function getApi() {
   });
 }
 
-export async function mintMainnetLockedToken(
+export async function mintCru18LockedToken(
   ethAddr: string,
-  tokenType: string,
   amount: string
 ): Promise<boolean> {
   try {
@@ -33,29 +32,23 @@ export async function mintMainnetLockedToken(
       });
 
     const crus = new BN(amount); // BN not support decimal
-    logger.info(
-      `  ↪ Try to mint ${tokenType} pre claim: { ${ethAddr}, ${amount} }.`
-    );
+    logger.info(`  ↪ Try to mint CRU18 pre claim: { ${ethAddr}, ${amount} }.`);
 
     // Query pre claims on chain
     const maybePreClaim = parseObj(
-      await api.query.claims.mainnetPreClaims(ethAddr, tokenType)
+      await api.query.claims.cru18PreClaims(ethAddr)
     );
     if (maybePreClaim) {
-      logger.info(`  ↪ Pre-claim already exist: ${ethAddr}(${tokenType})`);
+      logger.info(`  ↪ Pre-claim already exist: ${ethAddr}`);
       return true; // Already mint this type of token of ethAddr
     }
 
-    const mintPreClaim = api.tx.claims.mintMainnetClaim(
-      ethAddr,
-      tokenType,
-      crus
-    );
+    const mintPreClaim = api.tx.claims.mintCru18Claim(ethAddr, crus);
     const txRes = parseObj(await sendTx(mintPreClaim));
 
     if (txRes) {
       const preClaimRes: BN | null = parseObj(
-        await api.query.claims.mainnetPreClaims(ethAddr, tokenType)
+        await api.query.claims.cru18PreClaims(ethAddr)
       );
       logger.info(
         `  ↪ Got pre claim info on chain: ${preClaimRes}, mint successfully`
@@ -68,7 +61,7 @@ export async function mintMainnetLockedToken(
       return false;
     }
   } catch (e: any) {
-    logger.error(`💥 Mint mainnet locked cru error: ${e}`);
+    logger.error(`💥 Mint cru18 locked cru error: ${e}`);
     return false;
   }
 }

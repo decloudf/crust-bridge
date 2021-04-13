@@ -1,14 +1,13 @@
 import BigNumber from 'bignumber.js';
 import logger from './log';
 import {parseObj} from './util';
-import {mintMainnetLockedToken} from './crustApi';
+import {mintCru18LockedToken} from './crustApi';
 const csv = require('csvtojson');
 
 const CruUnit = new BigNumber(1_000_000_000_000);
 
 interface TokenInfo {
   address: string;
-  tokenType: string;
   amount: BigNumber;
 }
 
@@ -21,7 +20,6 @@ async function loadCRU18Holders(): Promise<Array<TokenInfo>> {
     const amount = balance.multipliedBy(CruUnit).decimalPlaces(0, 6);
     return {
       address: holder.HolderAddress as string,
-      tokenType: 'CRU18',
       amount,
     };
   });
@@ -40,11 +38,7 @@ async function main() {
 
   // 2. Mint Pre claim
   for (const holder of cru18Holders) {
-    await mintMainnetLockedToken(
-      holder.address,
-      holder.tokenType,
-      holder.amount.toString()
-    );
+    await mintCru18LockedToken(holder.address, holder.amount.toString());
   }
 }
 

@@ -18,7 +18,7 @@
     "posttest": "npm run lint"
   },
   "dependencies": {
-    "@crustio/type-definitions": "^0.0.6",
+    "@crustio/type-definitions": "^0.0.5",
     "@polkadot/api": "^4.5.1",
     "bignumber.js": "^9.0.1",
     "bn.js": "^5.2.0",
