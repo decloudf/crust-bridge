@@ -7,6 +7,7 @@
   "author": "Zikun Fan <kun@crust.network>",
   "license": "GPL-3.0",
   "scripts": {
+    "debug": "npx ts-node src/index.ts",
     "lint": "gts lint",
     "build": "tsc -p ./",
     "clean": "gts clean",
@@ -17,10 +18,19 @@
     "posttest": "npm run lint"
   },
   "dependencies": {
-    "got": "^11.8.2"
+    "@crustio/type-definitions": "^0.0.5",
+    "@polkadot/api": "^4.5.1",
+    "bignumber.js": "^9.0.1",
+    "bn.js": "^5.2.0",
+    "csvtojson": "^2.0.10",
+    "dotenv": "^8.2.0",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@types/bignumber.js": "^5.0.0",
+    "@types/bn.js": "^5.1.0",
     "@types/node": "^14.11.2",
+    "@types/winston": "^2.4.4",
     "gts": "^3.1.0",
     "nodemon": "^2.0.7",
     "ts-node": "^9.1.1",
