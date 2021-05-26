@@ -32,6 +32,6 @@ app.use(auth(apiPass));
 app.use(router.routes());
 
 if (require.main === module) {
-  logger.info(`🌉  Crust Maxwell bridge runs on ${process.env.PORT}`);
+  logger.info(`🌉  Crust Maxwell Bridge runs on ${process.env.PORT}`);
   app.listen(process.env.PORT); // default ports
 }

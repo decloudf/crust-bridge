@@ -1,5 +1,5 @@
 {
-  "name": "crust-maxwell-bridge",
+  "name": "crust-maxwell-claim",
   "version": "0.1.1",
   "description": "Bridge between Crust Maxwell Network Token and Crust ERC20 Token",
   "main": "index.js",
@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "@koa/cors": "^3.1.0",
-    "@polkadot/api": "^3.4.1",
+    "@polkadot/api": "^4.2.2-4",
+    "@crustio/type-definitions": "^0.0.9",
     "bn.js": "^5.1.3",
     "csv-writer": "^1.6.0",
     "dotenv": "^8.2.0",
