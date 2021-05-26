@@ -18,7 +18,7 @@
     "posttest": "yarn run lint"
   },
   "dependencies": {
-    "@crustio/type-definitions": "0.0.9",
+    "@crustio/type-definitions": "file:../../../../crust-type-definitions/packages/type-definitions/build",
     "@koa/cors": "^3.1.0",
     "@polkadot/api": "4.2.2-4",
     "bn.js": "^5.1.3",

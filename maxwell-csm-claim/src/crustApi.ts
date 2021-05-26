@@ -8,7 +8,7 @@ import {
   csmContractAddr,
   minEthConfirmation,
   csmClaimAddr,
-  csmClaimContract,
+  // csmClaimContract,
 } from './env';
 import logger from './log';
 import {erc20ToCSM, parseObj, sendTx} from './util';
@@ -75,8 +75,8 @@ export async function ethTxParser(
     const to = ('0x' + inputs[0]).toLowerCase();
     // Failed with not csm claim
     if (
-      to !== csmClaimAddr.toLowerCase() &&
-      to !== csmClaimContract.toLowerCase()
+      to !== csmClaimAddr.toLowerCase()
+      // && to !== csmClaimContract.toLowerCase()
     ) {
       logger.info(`  ↪ Not csm token claim transaction: ${to}`);
       return null;
@@ -133,7 +133,7 @@ export async function claimCSMMiner(
       return true; // Already mint this eth tx
     }
 
-    const mintClaim = api.tx.claims.mintCSMClaim(ethTx, ethAddr, csms);
+    const mintClaim = api.tx.claims.mintCsmClaim(ethTx, ethAddr, csms);
     const txRes = parseObj(await sendTx(mintClaim));
 
     if (txRes) {

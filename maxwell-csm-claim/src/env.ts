@@ -12,7 +12,7 @@ export const csmClaimAddr = process.env.CSM_CLAIM_ADDRESS as string;
 export const minEthConfirmation = Number(
   process.env.MIN_ETH_CONFIRMATION as string
 );
-export const csmClaimContract = process.env.CSM_CLAIM_CONTRACT as string;
+// export const csmClaimContract = process.env.CSM_CLAIM_CONTRACT as string;
 export const apiPass = {
   name: process.env.API_AUTH_NAME as string,
   pass: process.env.API_AUTH_PWD as string,
