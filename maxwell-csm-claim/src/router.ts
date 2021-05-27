@@ -1,7 +1,7 @@
 import {Context, Next} from 'koa';
 import BN = require('bn.js');
 import Router = require('koa-router');
-import {claimCSMMiner, ethTxParser} from './crustApi';
+import {mintCsmClaim, ethTxParser} from './crustApi';
 import logger from './log';
 import {timeout} from 'promise-timeout';
 
@@ -28,7 +28,7 @@ router.post('/csmClaim/:hash', async (ctx: Context, next: Next) => {
         txLocker,
         'sendMintClaim',
         async () => {
-          return await claimCSMMiner(ethTxHash, claimer, amount);
+          return await mintCsmClaim(ethTxHash, claimer, amount);
         },
         {
           code: 409,

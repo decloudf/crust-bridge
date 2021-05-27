@@ -102,7 +102,7 @@ export async function ethTxParser(
  * @param amount Claim amount with 18 decimals
  * @returns Mint success or not
  */
-export async function claimCSMMiner(
+export async function mintCsmClaim(
   ethTx: string,
   ethAddr: string,
   amount: BN
@@ -147,7 +147,7 @@ export async function claimCSMMiner(
       return (
         claimRes !== null &&
         claimRes[0].toLowerCase() === ethAddr.toLowerCase() &&
-        claimRes[1] === csms
+        Number(claimRes[1]) === Number(csms)
       );
     } else {
       return false;
