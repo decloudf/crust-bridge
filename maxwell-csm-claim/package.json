@@ -7,7 +7,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "debug": "nodemon src/index.ts",
-    "start": "node src/build/src/index.js",
+    "start": "node build/src/index.js",
     "build": "tsc -p ./ & cp src/abi.json build/src/",
     "lint": "gts lint",
     "clean": "gts clean",
