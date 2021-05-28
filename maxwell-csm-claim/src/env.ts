@@ -3,7 +3,7 @@
 // eslint-disable-next-line node/no-extraneous-require
 require('dotenv').config();
 
-export const crustABI = require('./abi');
+export const csmABI = require('./abi');
 export const ethEndpoint = process.env.ETH_ENDPOINT as string;
 export const csmContractAddr = process.env.CSM_CONTRACT_ADDRESS as string;
 export const minerSeeds = process.env.MINER_SEEDS as string;

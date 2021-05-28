@@ -3,12 +3,11 @@ import {ApiPromise, WsProvider} from '@polkadot/api';
 import {typesBundleForPolkadot} from '@crustio/type-definitions';
 import {
   cruEndpoint,
-  crustABI,
+  csmABI,
   ethEndpoint,
   csmContractAddr,
   minEthConfirmation,
   csmClaimAddr,
-  // csmClaimContract,
 } from './env';
 import logger from './log';
 import {erc20ToCSM, parseObj, sendTx} from './util';
@@ -33,8 +32,8 @@ export async function ethTxParser(
   txHash: string
 ): Promise<[string, BN] | null> {
   try {
-    // 0. Load CRUST decoder
-    const decoder = new InputDecoder(crustABI);
+    // 0. Load CSM decoder
+    const decoder = new InputDecoder(csmABI);
 
     // 1. Connect to eth endpoint
     const web3 = new Web3(new Web3.providers.HttpProvider(ethEndpoint));
