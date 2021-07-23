@@ -24,7 +24,7 @@ export async function sendTx(tx: SubmittableExtrinsic) {
   return new Promise((resolve, reject) => {
     tx.signAndSend(krp, ({events = [], status}) => {
       logger.info(
-        `  ↪ 💸 [tx]: Transaction status: ${status.type}, nonce: ${tx.nonce}`
+        `    ↪ 💸  Transaction status: ${status.type}, nonce: ${tx.nonce}`
       );
 
       if (
@@ -42,12 +42,10 @@ export async function sendTx(tx: SubmittableExtrinsic) {
         events.forEach(({event: {method, section}}) => {
           if (section === 'system' && method === 'ExtrinsicFailed') {
             // Error with no detail, just return error
-            logger.info(`  ↪ 💸 ❌ [tx]: Send transaction(${tx.type}) failed.`);
+            logger.info(`    ↪ ❌  Send transaction(${tx.hash}) failed`);
             resolve(false);
           } else if (method === 'ExtrinsicSuccess') {
-            logger.info(
-              `  ↪ 💸 ✅ [tx]: Send transaction(${tx.type}) success.`
-            );
+            logger.info(`    ↪ ✅  Send transaction(${tx.hash}) success`);
             resolve(true);
           }
         });
@@ -68,7 +66,7 @@ export async function sendTx(tx: SubmittableExtrinsic) {
 export function erc20ToCru(amount: BN): BN {
   const crus = amount.div(new BN(1000000));
   logger.info(
-    `Convert erc20(${amount.toString()}) into cru(${crus.toString()})`
+    `  ↪ 🔗  Convert ERC20(${amount.toString()}) into CRU(${crus.toString()})`
   );
   return crus;
 }
