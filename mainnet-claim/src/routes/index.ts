@@ -11,7 +11,6 @@ const txLocker = {};
 router.post('/claim/:hash', async (ctx: Context, next: Next) => {
   const ethTxHash = ctx.params.hash;
   const parseTx = async () => {
-    logger.info(`Received eth tx hash: ${ethTxHash}`);
     // 1. Parse eth tx
     const parseRes: [string, BN] | null = await ethTxParser(ethTxHash);
 
