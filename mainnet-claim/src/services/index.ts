@@ -133,7 +133,7 @@ export async function mintClaim(
       return (
         claimRes !== null &&
         claimRes[0].toLowerCase() === ethAddr.toLowerCase() &&
-        claimRes[1] === crus
+        String(claimRes[1]) === crus.toString()
       );
     } else {
       return false;
