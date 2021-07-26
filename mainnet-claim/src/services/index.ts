@@ -23,6 +23,10 @@ export async function ethTxParser(
 ): Promise<[string, BN] | null> {
   try {
     logger.info(`🙋🏻‍♂️  Received eth tx hash: ${txHash}`);
+    if (!txHash || txHash.length !== 66) {
+      logger.warn('  ↪ ☠️  Bad length of tx hash');
+      return null;
+    }
 
     // 0. Load CRUST decoder
     const decoder = new InputDecoder(crustABI);

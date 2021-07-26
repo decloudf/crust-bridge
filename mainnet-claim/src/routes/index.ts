@@ -9,8 +9,9 @@ const router = new Router();
 const txLocker = {};
 
 router.post('/claim/:hash', async (ctx: Context, next: Next) => {
-  const ethTxHash = ctx.params.hash;
+  let ethTxHash = ctx.params.hash;
   const parseTx = async () => {
+    ethTxHash = ethTxHash.trim();
     // 1. Parse eth tx
     const parseRes: [string, BN] | null = await ethTxParser(ethTxHash);
 
