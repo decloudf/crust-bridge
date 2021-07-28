@@ -3,7 +3,8 @@ import {
   claimBackAddress,
   claimBackEndBN,
   claimBackStartBN,
-  claimBackFee,
+  cruClaimBackFee,
+  csmClaimBackFee,
 } from './env';
 import got from 'got';
 import logger from './log';
@@ -28,7 +29,9 @@ interface ClaimBackRecord {
   amount: number;
 }
 
-async function getClaimBackTransfers(): Promise<ClaimBackTransfer[]> {
+async function getClaimBackTransfers(): Promise<
+  [ClaimBackTransfer[], ClaimBackTransfer[]]
+> {
   const transfersApi = subscanEndpoint + '/api/scan/transfers';
   const res: any = await got.post(transfersApi, {
     json: {
@@ -72,19 +75,27 @@ async function getClaimBackTransfers(): Promise<ClaimBackTransfer[]> {
       t.success
   );
 
+  const cruTransfers = new Array<ClaimBackTransfer>();
+  const csmTransfers = new Array<ClaimBackTransfer>();
   toTargetTransfers.forEach((tt, idx) => {
-    logger.info(
-      `${idx}: ${tt.from} -> ${tt.to}(BN: ${tt.block_num}): ${tt.amount} CRUs`
-    );
-  });
-
-  return toTargetTransfers.map(tt => {
     const cbt: ClaimBackTransfer = {
       account: tt.from,
       amount: tt.amount,
     };
-    return cbt;
+    if (tt.module === 'balances') {
+      logger.info(
+        `${idx}: ${tt.from} -> ${tt.to}(BN: ${tt.block_num}): ${tt.amount} CRUs`
+      );
+      cruTransfers.push(cbt);
+    } else if (tt.module === 'csm') {
+      logger.info(
+        `${idx}: ${tt.from} -> ${tt.to}(BN: ${tt.block_num}): ${tt.amount} CSMs`
+      );
+      csmTransfers.push(cbt);
+    }
   });
+
+  return [cruTransfers, csmTransfers];
 }
 
 async function getBondedEth(account: string): Promise<string | null> {
@@ -93,13 +104,13 @@ async function getBondedEth(account: string): Promise<string | null> {
   return maybeEthAddr ? maybeEthAddr : null;
 }
 
-async function main(): Promise<boolean> {
-  // 0. Get all legal claim back transfers
-  const claimBackTransfers: ClaimBackTransfer[] = await getClaimBackTransfers();
+async function getClaimBackRecord(
+  transfers: ClaimBackTransfer[],
+  fee: number
+): Promise<ClaimBackRecord[]> {
   const claimBackMap: Map<string, [string | null, number]> = new Map();
-
   // 1. Get bonded ethereum address and sum up by same `crustAccount`
-  for (const cbt of claimBackTransfers) {
+  for (const cbt of transfers) {
     const crustAccount = cbt.account;
     if (claimBackMap.has(crustAccount)) {
       // a. Sum up with existed account
@@ -121,18 +132,43 @@ async function main(): Promise<boolean> {
     const value = claimBackMap.get(crustAccount);
 
     // - claimBackFee
-    if (value && value[1] > claimBackFee) {
+    if (value && value[1] > fee) {
       claimBackRecords.push({
         crustAccount,
         ethAccount: value[0] !== null ? value[0] : '',
-        amount: value[1] - claimBackFee,
+        amount: value[1] - fee,
       });
     }
   }
 
+  return claimBackRecords;
+}
+
+async function main(): Promise<boolean> {
+  // 1. Get all legal claim back transfers
+  const [cruTransfers, csmTransfers] = await getClaimBackTransfers();
+
+  // 2. Build claim back record
+  const cruClaimBackRecords = await getClaimBackRecord(
+    cruTransfers,
+    cruClaimBackFee
+  );
+  const csmClaimBackRecords = await getClaimBackRecord(
+    csmTransfers,
+    csmClaimBackFee
+  );
+
   // 3. Write to csv file
-  const csvWriter = createCsvWriter({
-    path: `./crust-bridge-claim-back-${new Date().toISOString()}.csv`,
+  const csvWriter1 = createCsvWriter({
+    path: `./crust-bridge-cru-claim-back-${new Date().toISOString()}.csv`,
+    header: [
+      {id: 'crustAccount', title: 'Crust Address'},
+      {id: 'ethAccount', title: 'Ethereum Address'},
+      {id: 'amount', title: 'Amount'},
+    ],
+  });
+  const csvWriter2 = createCsvWriter({
+    path: `./crust-bridge-csm-claim-back-${new Date().toISOString()}.csv`,
     header: [
       {id: 'crustAccount', title: 'Crust Address'},
       {id: 'ethAccount', title: 'Ethereum Address'},
@@ -140,8 +176,10 @@ async function main(): Promise<boolean> {
     ],
   });
 
-  await csvWriter.writeRecords(claimBackRecords);
+  await csvWriter1.writeRecords(cruClaimBackRecords);
+  await csvWriter2.writeRecords(csmClaimBackRecords);
 
+  logger.info('Export csv success');
   return true;
 }
 
