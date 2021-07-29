@@ -16,8 +16,11 @@ const logger = createLogger({
     // - Write all logs error (and below) to `crust-bridge-error.log`.
     //
     new transports.Console(),
-    new transports.File({filename: 'crust-bridge-error.log', level: 'error'}),
-    new transports.File({filename: 'crust-bridge-combined.log'}),
+    new transports.File({
+      filename: 'crust-mainnet-claim-error.log',
+      level: 'error',
+    }),
+    new transports.File({filename: 'crust-mainnet-claim-combined.log'}),
   ],
 });
 
