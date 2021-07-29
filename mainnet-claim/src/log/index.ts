@@ -17,10 +17,10 @@ const logger = createLogger({
     //
     new transports.Console(),
     new transports.File({
-      filename: 'crust-mainnet-claim-error.log',
+      filename: './logs/crust-mainnet-claim-error.log',
       level: 'error',
     }),
-    new transports.File({filename: 'crust-mainnet-claim-combined.log'}),
+    new transports.File({filename: './logs/crust-mainnet-claim-combined.log'}),
   ],
 });
 
