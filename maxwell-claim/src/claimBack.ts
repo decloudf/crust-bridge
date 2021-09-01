@@ -5,6 +5,7 @@ import {
   claimBackStartBN,
   cruClaimBackFee,
   csmClaimBackFee,
+  subscanSecret,
 } from './env';
 import got from 'got';
 import logger from './log';
@@ -14,7 +15,7 @@ import {getApi} from './services/crustApi';
 const sleep = require('util').promisify(setTimeout);
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
-const subscanEndpoint = 'https://crust.subscan.io';
+const subscanEndpoint = 'https://maxwell.api.subscan.io';
 const row = 20;
 const api = getApi();
 
@@ -38,8 +39,13 @@ async function getClaimBackTransfers(): Promise<
       address: claimBackAddress,
       row,
       page: 1,
+      from_block: claimBackStartBN,
+      to_block: claimBackEndBN,
     },
     responseType: 'json',
+    headers: {
+      'x-api-key': subscanSecret,
+    },
   });
   const data = parseObj(res.body.data);
   const totalTransferCount: number = data['count'];
@@ -54,8 +60,13 @@ async function getClaimBackTransfers(): Promise<
         address: claimBackAddress,
         row,
         page: i,
+        from_block: claimBackStartBN,
+        to_block: claimBackEndBN,
       },
       responseType: 'json',
+      headers: {
+        'x-api-key': subscanSecret,
+      },
     });
     const data = parseObj(res.body.data);
 

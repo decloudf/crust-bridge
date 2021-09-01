@@ -25,3 +25,4 @@ export const claimBackEndBN = Number(process.env.CLAIM_BACK_END_BN as string);
 export const cruClaimBackFee = Number(process.env.CRU_CLAIM_BACK_FEE as string);
 export const csmClaimBackFee = Number(process.env.CSM_CLAIM_BACK_FEE as string);
 export const claimBackAddress = process.env.CLAIM_BACK_ADDRESS as string;
+export const subscanSecret = process.env.SUBSCAN_SECRET as string;
