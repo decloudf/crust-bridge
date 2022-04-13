@@ -1,7 +1,7 @@
 FROM node:current-alpine3.10
 
 # Create directory
-WORKDIR /usr/src/crust-mainnet-claim
+WORKDIR /usr/src/crust-shadow-claim
 
 # Move source files to docker image
 COPY . .
